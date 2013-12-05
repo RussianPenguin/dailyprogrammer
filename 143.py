@@ -32,7 +32,7 @@ braile = {
 	'011101': 'w'
 }
 
-file = open('input.txt', 'r')
+file = open('143.input', 'r')
 
 input = []
 
