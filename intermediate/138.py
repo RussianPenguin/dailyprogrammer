@@ -12,7 +12,7 @@ if __name__ == '__main__':
 	d = math.sqrt((circles[0]-circles[2]) ** 2 + (circles[1] - circles[3]) ** 2)
 
 	# calc theta 
-	# theta = 2arccod(d/R)
+	# theta = 2*arccos(d/R)
 	
 	two_circle_area = 2*math.pi
 	
