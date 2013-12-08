@@ -128,8 +128,8 @@ if __name__ == '__main__':
 	# calculate, which of founded trees are maximal tree
 	food_order = []
 
-	print "befor remove transitive edges"
-	print_graph(food_graph)
+	#print "befor remove transitive edges"
+	#print_graph(food_graph)
 	# remove transitive edges
 	for j in range(len(food_graph)):
 		if not j in unused:
@@ -139,12 +139,14 @@ if __name__ == '__main__':
 						for k in range(len(food_graph)):
 							if not k in unused and food_graph[j][k] == 1:
 								food_graph[i][k] = 0;
-	print "after remove transitive edges"
-	print_graph(food_graph)
+	#print "after remove transitive edges"
+	#print_graph(food_graph)
+	# found all possible orders for banquet
 	for i in vertex_without_input:
 		food_order.append(dfs(i,  food_graph, unused))
+	# sort order for length
+	# print order
 	food_order.sort(lambda x, y: cmp(len(x), len(y)))
-
 	print_food_order(food_order[-1], food, simular)
 	
 	#print defines, "\n", food, "\n", rules, "\n", food_map, "\n", food_graph
