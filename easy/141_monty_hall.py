@@ -27,4 +27,5 @@ if __name__ == '__main__':
 		elif doors[other_door] == 'car':
 			tactics[1] += 1
 
-	print tactics
+	for idx in range(len(tactics)):
+		print "Tactic " + str(idx + 1) + ": " + "%.2f" % ((float(tactics[idx]) * 100)/simulation) + "% winning chance"
