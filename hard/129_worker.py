@@ -57,7 +57,6 @@ def bbp(d):
 	pool = multiprocessing.Pool(processes=4)
 	matrix = [(4, 1 ,d), (-2, 4, d), (-1, 5, d), (-1, 6, d)]
 	result = pool.map(calc_sd, matrix)
-	print result
 	result = reduce(lambda x, y: x+y, result)
 	#result = 4*bbp_sum(d, 1) - 2*bbp_sum(d, 4) - bbp_sum(d, 5) - bbp_sum(d, 6)
 	result = result - math.floor(result)
