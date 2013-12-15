@@ -1,5 +1,6 @@
 # -*- encoding: utf8 -*-
 import math
+import multiprocessing
 
 def modular_exp(b, n, k):
 	t = 1
@@ -22,15 +23,16 @@ def modular_exp(b, n, k):
 			
 	
 
-def bbp_sum(d, j):
+def bbp_sum(j, d):
 	sum = 0.0
 
 	for k in xrange(d+1):
 		eight_k_j = float(8*k+j)
 		fraction = (modular_exp(16, d - k, eight_k_j)) / eight_k_j
 		sum += fraction
+		sum -= math.floor(sum)
 
-	sum = sum - int(sum)
+	sum = sum - math.floor(sum)
 
 	k = d+1
 	sigma = 1e-15
@@ -40,19 +42,28 @@ def bbp_sum(d, j):
 		if fraction < sigma:
 			break
 		sum += fraction
+		sum -= math.floor(sum)
 		k += 1
 
 	sum = sum - int(sum)
 	print j, sum
 	return sum
 	
+def calc_sd(x):
+	return x[0]*bbp_sum(x[1], x[2])
 
 def bbp(d):
-	result = 4*bbp_sum(d, 1) - 2*bbp_sum(d, 4) - bbp_sum(d, 5) - bbp_sum(d, 6)
+
+	pool = multiprocessing.Pool(processes=4)
+	matrix = [(4, 1 ,d), (-2, 4, d), (-1, 5, d), (-1, 6, d)]
+	result = pool.map(calc_sd, matrix)
+	print result
+	result = reduce(lambda x, y: x+y, result)
+	#result = 4*bbp_sum(d, 1) - 2*bbp_sum(d, 4) - bbp_sum(d, 5) - bbp_sum(d, 6)
 	result = result - math.floor(result)
 	digit = result * 16
 	hex_str = ''
-	for i in range(6):
+	for i in range(9):
 		result = result * 16.0
 		hex_str += '%X' % int(result)
 		result = result - math.floor(result)
