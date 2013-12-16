@@ -68,9 +68,13 @@ if __name__ == '__main__':
 		data = conn.recv(BUFFER_SIZE)
 		while data:
 			data = data.strip()
-			#print data
 			if data == 'kill':
+				conn.shutdown(1)
+				conn.close()
 				exit(0)
 			if data.isdigit():
 				conn.send("%X\n" % bbp(int(data) - 1))
 			data = conn.recv(BUFFER_SIZE)
+		else:
+			conn.shutdown(1)
+			conn.close()
