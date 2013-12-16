@@ -58,6 +58,8 @@ def bbp(d):
 	pool = multiprocessing.Pool(processes=4)
 	matrix = [(4, 1 ,d), (-2, 4, d), (-1, 5, d), (-1, 6, d)]
 	result = pool.map(calc_sd, matrix)
+	pool.close()
+	pool.join()
 	result = reduce(lambda x, y: x+y, result)
 	#result = 4*bbp_sum(d, 1) - 2*bbp_sum(d, 4) - bbp_sum(d, 5) - bbp_sum(d, 6)
 	result = result - math.floor(result)
@@ -71,6 +73,7 @@ def bbp(d):
 	return int(digit)
 
 if __name__ == '__main__':
+
 	BUFFER_SIZE=50
 	bind_to = sys.argv[1].split(':')
 
@@ -81,12 +84,12 @@ if __name__ == '__main__':
 	s.listen(1)
 
 	conn, addr = s.accept()
-
-	while True:
-		data = conn.recv(BUFFER_SIZE).strip()
-		print data
-		if data == 'kill':
-			break
-		conn.send("%X\n" % bbp(int(data)))
-
-	conn.close()
+	try:
+		while True:
+			data = conn.recv(BUFFER_SIZE).strip()
+			print data
+			if data == 'kill':
+				break
+			conn.send("%X\n" % bbp(int(data)))
+	finally:
+		conn.close()
