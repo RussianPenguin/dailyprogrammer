@@ -1,6 +1,8 @@
 # -*- encoding: utf8 -*-
 import math
 import multiprocessing
+import socket
+import sys
 
 def modular_exp(b, n, k):
 	t = 1
@@ -53,7 +55,6 @@ def calc_sd(x):
 	return x[0]*bbp_sum(x[1], x[2])
 
 def bbp(d):
-
 	pool = multiprocessing.Pool(processes=4)
 	matrix = [(4, 1 ,d), (-2, 4, d), (-1, 5, d), (-1, 6, d)]
 	result = pool.map(calc_sd, matrix)
@@ -70,4 +71,22 @@ def bbp(d):
 	return int(digit)
 
 if __name__ == '__main__':
-	print '%X' % bbp(1000000)
+	BUFFER_SIZE=50
+	bind_to = sys.argv[1].split(':')
+
+
+	print bind_to
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.bind((bind_to[0], int(bind_to[1])))
+	s.listen(1)
+
+	conn, addr = s.accept()
+
+	while True:
+		data = conn.recv(BUFFER_SIZE).strip()
+		print data
+		if data == 'kill':
+			break
+		conn.send("%X\n" % bbp(int(data)))
+
+	conn.close()
