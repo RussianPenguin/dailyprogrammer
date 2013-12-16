@@ -4,52 +4,31 @@ import multiprocessing
 import socket
 import sys
 
-def modular_exp(b, n, k):
-	t = 1
-	while t <= n:
-		t *= 2
-	else:
-		t /= 2
-	r = 1
-
-	while True:
-		if n >= t:
-			r = b*r % k
-			n = n - t
-		t /= 2
-		if t >= 1:
-			r = r ** 2 % k
-			continue
-		break
-	return r
-			
-	
-
 def bbp_sum(j, d):
-	sum = 0.0
 
-	for k in xrange(d+1):
-		eight_k_j = float(8*k+j)
-		fraction = (modular_exp(16, d - k, eight_k_j)) / eight_k_j
-		sum += fraction
-		sum -= math.floor(sum)
-
-	sum = sum - math.floor(sum)
-
-	k = d+1
-	sigma = 1e-15
-	while True:
-		eight_k_j = float(8*k + j)
-		fraction = 16.0 ** (d - k) / eight_k_j
-		if fraction < sigma:
-			break
-		sum += fraction
-		sum -= math.floor(sum)
+	sum1 = 0.0
+	k = 0
+	while k <= d:
+		eight_k_j = 8*k+j
+		sum1 = (sum1 + float(pow(16, d - k, eight_k_j)) / eight_k_j) % 1.0
 		k += 1
 
-	sum = sum - int(sum)
-	print j, sum
-	return sum
+	k = d+1
+	sigma = 1e-25
+
+	sum2 = 0.0
+	while True:
+		eight_k_j = float(8*k + j)
+		sum2_temp = sum2 + pow(16.0, d - k) / eight_k_j
+
+		if math.fabs(sum2 - sum2_temp) < sigma:
+			break
+		sum2 = sum2_temp
+
+		k += 1
+
+	print j, sum1+sum2
+	return (sum1+sum2) % 1.0
 	
 def calc_sd(x):
 	return x[0]*bbp_sum(x[1], x[2])
@@ -65,7 +44,7 @@ def bbp(d):
 	result = result - math.floor(result)
 	digit = result * 16
 	hex_str = ''
-	for i in range(9):
+	for i in range(10):
 		result = result * 16.0
 		hex_str += '%X' % int(result)
 		result = result - math.floor(result)
@@ -83,13 +62,15 @@ if __name__ == '__main__':
 	s.bind((bind_to[0], int(bind_to[1])))
 	s.listen(1)
 
-	conn, addr = s.accept()
-	try:
-		while True:
-			data = conn.recv(BUFFER_SIZE).strip()
-			print data
+	while True:
+		conn, addr = s.accept()
+		
+		data = conn.recv(BUFFER_SIZE)
+		while data:
+			data = data.strip()
+			#print data
 			if data == 'kill':
-				break
-			conn.send("%X\n" % bbp(int(data)))
-	finally:
-		conn.close()
+				exit(0)
+			if data.isdigit():
+				conn.send("%X\n" % bbp(int(data) - 1))
+			data = conn.recv(BUFFER_SIZE)
