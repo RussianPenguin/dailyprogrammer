@@ -59,6 +59,7 @@ if __name__ == '__main__':
 
 	print bind_to
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	s.bind((bind_to[0], int(bind_to[1])))
 	s.listen(1)
 
