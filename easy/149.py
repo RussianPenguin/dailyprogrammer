@@ -1,12 +1,20 @@
 import re
 
-line = re.sub('\W', '', raw_input())
+def disemvoweler(string):
+	vowels = re.compile('(?i)[aeiou]')
+	notVowels = re.compile('(?i)[^aeiou]')
 
-vovels = re.compile('(?i)[aeiou]')
-notVovels = re.compile('(?i)[^aeiou]')
+	return vowels.sub('', string),  notVowels.sub('', string)
 
-print vovels.sub('', line)
-print notVovels.sub('', line)
+
+if __name__ == '__main__':
+	line = re.sub('\W', '', raw_input())
+	result = disemvoweler(line)
+
+	print result[0]
+	print result[1]
+
+
 
 
 
