@@ -17,7 +17,6 @@ puzzle = (raw_input(), raw_input())
 def solve(puzzle, resultString):
 	# search pattern for puzzle
 	# pattern shold be part of puzzle
-
 	puz0len = len(puzzle[0])
 	puz1len = len(puzzle[1])
 
@@ -26,15 +25,18 @@ def solve(puzzle, resultString):
 		i0len = len(item[1][0])
 		i1len = len(item[1][1])
 
-		if i0len <= puz0len and i1len <= puz1len and item[1][0] == puzzle[0][:(i0len)] and item[1][1] == puzzle[1][:(i1len)]:
+		if i0len > puz0len or i1len > puz1len:
+			continue
+
+		if i0len <= puz0len and i1len <= puz1len and item[1][0] == puzzle[0][(-i0len):] and item[1][1] == puzzle[1][(-i1len):]:
 			
-			puz0last = puzzle[0][i0len:]
-			puz1last = puzzle[1][i1len:]
+			puz0last = puzzle[0][:-i0len]
+			puz1last = puzzle[1][:-i1len]
 
 			if len(puz0last) > 0 or len(puz1last) > 0:
-				solve((puz0last, puz1last), resultString + ' ' + item[0])
+				solve((puz0last, puz1last), item[0] + ' ' + resultString)
 			else:
-				print resultString + ' ' + item[0]
+				print item[0] + ' ' + resultString
 		
 
 solve(puzzle, '')
