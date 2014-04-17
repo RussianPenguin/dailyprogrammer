@@ -1,6 +1,12 @@
 import imp
+import os.path
+import sys
 
-e149 = imp.load_source('e149', '../easy/149.py')
+print os.path.dirname(__file__)
+basepath = os.path.dirname(__file__)
+
+print os.path.abspath(os.path.join(basepath, '..', 'easy/149.py'))
+e149 = imp.load_source('e149', os.path.abspath(os.path.join(basepath, '..', 'easy/149.py')))
 
 dictionary = []
 
@@ -34,10 +40,14 @@ def solve(puzzle, resultString):
 			puz1last = puzzle[1][:-i1len]
 
 			if len(puz0last) > 0 or len(puz1last) > 0:
-				solve((puz0last, puz1last), item[0] + ' ' + resultString)
+				for solution in solve((puz0last, puz1last), item[0] + ' ' + resultString):
+					yield solution
 			else:
-				print item[0] + ' ' + resultString
+				yield item[0] + ' ' + resultString
 		
 
-solve(puzzle, '')
+if __name__ == '__main__':
+
+	for solution in solve(puzzle, ''):
+		print solution
 
