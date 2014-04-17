@@ -1,3 +1,6 @@
+# solution use http://www.afterthedeadline.com/api.slp
+# and https://bitbucket.org/miguelventura/after_the_deadline/
+
 import imp
 import sys
 import os.path
